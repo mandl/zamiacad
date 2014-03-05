@@ -207,7 +207,7 @@ public abstract class InstantiatedUnit extends ConcurrentStatement {
 
 	public abstract IGInstantiation computeIGInstantiation(DMUID aDUUID, IGContainer aContainer, IGStructure aStructure, IGElaborationEnv aEE) throws ZamiaException;
 
-	protected IGInstantiation instantiateIGModule(Architecture aArch, DMUID aParentDUUID, IGContainer aParentContainer, IGStructure aParentStructure, IGElaborationEnv aParentEE) {
+	protected IGInstantiation instantiateIGModule(Architecture aArch, DMUID aParentDUUID, IGContainer aParentContainer, IGStructure aParentStructure, IGElaborationEnv aParentEE, AssociationList gma, AssociationList pma) {
 
 		try {
 
@@ -229,8 +229,11 @@ public abstract class InstantiatedUnit extends ConcurrentStatement {
 			/*
 			 * compute actual generics
 			 */
+			if (gma == null) {
+				gma = fGMS;
+			}
 
-			if (fGMS != null) {
+			if (gma != null) {
 				IGElaborationEnv formalEE = new IGElaborationEnv(zprj);
 				IGContainer formalContainer = new IGContainer(0, getLocation(), zdb);
 				Context formalContext = aArch.getContext();
@@ -261,7 +264,7 @@ public abstract class InstantiatedUnit extends ConcurrentStatement {
 
 					ArrayList<IGObject> generics = formalContainer.getGenericList();
 					
-					IGMappings mappings = fGMS.map(formalContainer, formalEE, formalCache, aParentContainer, aParentEE, actualCache, generics, true, report, true);
+					IGMappings mappings = gma.map(formalContainer, formalEE, formalCache, aParentContainer, aParentEE, actualCache, generics, true, report, true);
 					if (mappings == null) {
 						throw new ZamiaException("Generics mapping failed:\n" + report, getLocation());
 					}
@@ -319,7 +322,11 @@ public abstract class InstantiatedUnit extends ConcurrentStatement {
 			try {
 				IGModule module = igm.getOrCreateIGModule(path, aParentDUUID, duuid, inst.getSignature(), inst.getActualGenerics(), true, location);
 
-				if (fPMS != null) {
+				if (pma == null) {
+					pma = fPMS;
+				}
+
+				if (pma != null) {
 
 					IGContainer formalContainer = module.getStructure().getContainer();
 
@@ -340,7 +347,7 @@ public abstract class InstantiatedUnit extends ConcurrentStatement {
 					ArrayList<IGObject> interfaces = formalContainer.getInterfaceList();
 
 					ErrorReport report = new ErrorReport();
-					IGMappings mappings = fPMS.map(formalIntfContainer, formalEE, formalCache, aParentContainer, aParentEE, actualCache, interfaces, true, report, true);
+					IGMappings mappings = pma.map(formalIntfContainer, formalEE, formalCache, aParentContainer, aParentEE, actualCache, interfaces, true, report, true);
 					if (mappings == null) {
 						throw new ZamiaException("Port mapping failed:\n" + report, getLocation());
 					}
