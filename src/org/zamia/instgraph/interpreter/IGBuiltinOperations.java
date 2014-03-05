@@ -167,6 +167,9 @@ public class IGBuiltinOperations {
 		case NOW:
 			return execNow(aSub, aRuntime, aLocation, aErrorMode, aReport);
 		
+		case DEALLOCATE:
+			return ReturnStatus.CONTINUE;
+
 		default:
 			throw new ZamiaException("Sorry, unimplemented builtin: " + builtin, aLocation);
 		}
