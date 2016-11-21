@@ -17,3 +17,5 @@ bin
 share/jars/cachedir/packages
 *.bak
 .project
+**/.DS_Store
+/.pydevproject

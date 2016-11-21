@@ -6,7 +6,9 @@ Bundle-Version: 0.11.4
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: zamiaCAD Project
 Bundle-Localization: plugin
-Export-Package: org.python.core,
+Export-Package: org.apache.oro.text,
+ org.apache.oro.text.regex,
+ org.python.core,
  org.zamia,
  org.zamia.analysis,
  org.zamia.analysis.ast,
