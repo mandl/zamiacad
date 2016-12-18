@@ -18,9 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import jline.ConsoleReader;
-
 import org.apache.log4j.Level;
+import org.python.jline.console.ConsoleReader;
 import org.w3c.dom.Node;
 import org.zamia.ExceptionLogger;
 import org.zamia.SourceFile;

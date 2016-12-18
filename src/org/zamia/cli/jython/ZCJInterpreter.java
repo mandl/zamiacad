@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 import org.python.core.PyException;
 import org.python.core.PyObject;
@@ -46,6 +47,16 @@ public class ZCJInterpreter {
 
 		// FIXME StdChannel.setOut(LoggerPrintStream.getInstance());
 
+		
+		Properties props = new Properties();
+		props.put("python.home","/home/mandl/jython2.7.0");
+		props.put("python.console.encoding", "UTF-8"); // Used to prevent: console: Failed to install '': java.nio.charset.UnsupportedCharsetException: cp0.
+		props.put("python.security.respectJavaAccessibility", "false"); //don't respect java accessibility, so that we can access protected members on subclasses
+		props.put("python.import.site","false");
+
+		Properties preprops = System.getProperties();
+		PythonInterpreter.initialize(preprops, props, new String[0]);
+				
 		fInterp = new PythonInterpreter();
 
 		fInterp.set("project", fZPrj);
