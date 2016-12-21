@@ -228,6 +228,7 @@ public class DiagnosticTestQuality {
 	 * @param aAllStmts logger representing all statements (assignments/conditions) in the design
 	 * @return assessment of the quality of diagnostic test
 	 */
+	@SuppressWarnings("rawtypes")
 	public static DiagnosticTestQuality createFrom(List<? extends IGCodeExecutionLogger> aHitCounters, IGCodeExecutionLogger aAllStmts) {
 
 		if (aHitCounters.size() < 2) {

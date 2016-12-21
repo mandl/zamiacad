@@ -12,8 +12,8 @@ from org.zamia.instgraph.sim.ref import IGSimRef
 from org.zamia.rtl import RTLVisualGraphContentProvider,RTLVisualGraphLabelProvider,RTLVisualGraphSelectionProvider
 from org.zamia.util import PathName, FileUtils
 from org.zamia.vg import VGLayout, VGGCSVG
-import sys
-sys.path.append(System.getenv().get("PYTHONPATH"))
+#import sys
+#sys.path.append(System.getenv().get("PYTHONPATH"))
 
 import os
 

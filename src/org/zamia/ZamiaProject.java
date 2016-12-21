@@ -90,14 +90,17 @@ public class ZamiaProject {
 	private RTLManager fRTLM;
 
 	private ZCJInterpreter fZCJ;
+	
+	private String jythonPath;
 
 	private static final String BUILDPATH_OBJ_NAME = "ZPRJ_BuildPath";
 
 	public ZamiaProject(String aId, String aBasePath, SourceFile aBuildPath, String aDataPath) throws IOException, ZamiaException, ZDBException {
-		this(aId, new FileIterator(aBasePath), aBuildPath, aDataPath);
+		this(aId, new FileIterator(aBasePath), aBuildPath, aDataPath,null);
 	}
-	public ZamiaProject(String aId, FileIterator aBasePath, SourceFile aBuildPath, String aDataPath) throws IOException, ZamiaException, ZDBException {
+	public ZamiaProject(String aId, FileIterator aBasePath, SourceFile aBuildPath, String aDataPath,String ajythonPath) throws IOException, ZamiaException, ZDBException {
 		fId = aId;
+		jythonPath = ajythonPath;
 		fBasePath = aBasePath;
 		fDataPath = aDataPath != null ? aDataPath : ZamiaTmpDir.getTmpDir().getAbsolutePath();
 
@@ -137,7 +140,7 @@ public class ZamiaProject {
 
 	public void initJythonInterpreter() {
 		try {
-			fZCJ = new ZCJInterpreter(this);
+			fZCJ = new ZCJInterpreter(this,jythonPath);
 
 			// run init script
 

@@ -41,25 +41,28 @@ public class ZCJInterpreter {
 
 	private ZamiaProject fZPrj;
 
-	public ZCJInterpreter(ZamiaProject aZPrj) throws ZamiaException {
+	public ZCJInterpreter(ZamiaProject aZPrj,String jythonPath) throws ZamiaException {
 
 		fZPrj = aZPrj;
 
 		// FIXME StdChannel.setOut(LoggerPrintStream.getInstance());
-
 		
+		if (jythonPath != null)
+		{
 		Properties props = new Properties();
-		props.put("python.home","/home/mandl/jython2.7.0");
+		props.put("python.home",jythonPath);
 		props.put("python.console.encoding", "UTF-8"); // Used to prevent: console: Failed to install '': java.nio.charset.UnsupportedCharsetException: cp0.
 		props.put("python.security.respectJavaAccessibility", "false"); //don't respect java accessibility, so that we can access protected members on subclasses
 		props.put("python.import.site","false");
 
 		Properties preprops = System.getProperties();
 		PythonInterpreter.initialize(preprops, props, new String[0]);
+		}
 				
 		fInterp = new PythonInterpreter();
 
 		fInterp.set("project", fZPrj);
+		
 
 		// run boot.py to set up basic zamia-specific commands
 
@@ -69,10 +72,10 @@ public class ZCJInterpreter {
 
 	public synchronized void evalFile(String aPath) throws ZamiaException {
 
-		if (System.getenv("PYTHONPATH") == null) {
-			logger.info("System variable PYTHONPATH is not specified, python will not work");
-			return;
-		}
+		//if (System.getenv("PYTHONPATH") == null) {
+		//	logger.info("System variable PYTHONPATH is not specified, python will not work");
+		//	return;
+		//}
 
 		if (aPath.startsWith("builtin:")) {
 			String uri = aPath.substring(8);

@@ -16,7 +16,8 @@ public class Parser
 {
     public final Analysis ignoredTokens = new AnalysisAdapter();
 
-    protected ArrayList nodeList;
+    @SuppressWarnings("rawtypes")
+	protected ArrayList nodeList;
 
     private final Lexer lexer;
     private final ListIterator stack = new LinkedList().listIterator();

@@ -89,7 +89,6 @@ public class ObjectSize {
 		return deepSizeOf(objectToSize, doneObj, 0);
 	}
 
-	@SuppressWarnings("unchecked")
 	private static long deepSizeOf(Object o, Map<Object, Object> doneObj, int depth) {
 		if (o == null) {
 			return 0;
