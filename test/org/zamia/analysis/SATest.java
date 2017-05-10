@@ -22,6 +22,8 @@ import org.zamia.ZamiaProject;
 import org.zamia.ZamiaProjectBuilder;
 import org.zamia.analysis.ast.ASTDeclarationSearch;
 import org.zamia.analysis.ast.ASTReferencesSearch;
+import org.zamia.analysis.ig.IGAssignmentsSearch;
+import org.zamia.analysis.ig.IGAssignmentsSearch.RootResult;
 import org.zamia.analysis.ig.IGReferencesSearch;
 import org.zamia.instgraph.IGInstantiation;
 import org.zamia.instgraph.IGItem;
@@ -40,6 +42,7 @@ import org.zamia.vhdl.ast.VHDLNode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -134,6 +137,18 @@ public class SATest {
 		assertNotNull(result);
 		result.dump(0, System.out);
 		assertEquals(6, result.countRefs());
+	}
+
+	@Test
+	public void testGCounterThroughAssignmentSearch() throws Exception {
+		setupTest("examples/refsearch", "examples/refsearch/BuildPath.txt");
+
+		SourceFile sf = new SourceFile(new File("examples/refsearch/if-then.vhdl"));
+		runThroughAssignmentSearch(sf, "WORK.IF_THEN:", 9, 4, true, -1, 4);
+		runThroughAssignmentSearch(sf, "WORK.IF_THEN:", 6, 6, false, -1, 3);
+
+		sf = new SourceFile(new File("examples/refsearch/levels.vhd"));
+		runThroughAssignmentSearch(sf, "WORK.LEVEL0:U1.U2.", 5, 3, true, -1, 3); // LEVEL22
 	}
 
 	@Test
@@ -424,7 +439,7 @@ public class SATest {
 				fail("Unknown item class: " + item);
 			}
 
-			ReferenceSearchResult result = rs.search(object, path, true, true, false, false);
+			ReferenceSearchResult result = rs.search(object, path, aUpwards, aDownwards, false, false);
 
 			return result;
 
@@ -433,6 +448,27 @@ public class SATest {
 		}
 
 		return null;
+	}
+
+	private void runThroughAssignmentSearch(SourceFile aSF, String aTLPath, int aLine, int aCol, boolean backward, int depth, int expected) throws ZamiaException,
+	IOException {
+		ToplevelPath tlp = new ToplevelPath(aTLPath);
+		SourceLocation location = new SourceLocation(aSF, aLine, aCol);
+		Pair<IGItem, ToplevelPath> res = SourceLocation2IG.findNearestItem(location, tlp, fZPrj);
+		assertNotNull("Failed to find nearest IG Item", res);
+		IGItem item = res.getFirst();
+		assertNotNull("Failed to find nearest IG Item", item);
+		ToplevelPath path = res.getSecond();
+		logger.info("SATest: nearest item: %s, path: %s", item, path);
+		IGObject object = IGReferencesSearch.asObject(item);
+		IGAssignmentsSearch rs = new IGAssignmentsSearch(fZPrj, depth);
+		Map<Long, RootResult> searches = rs.assignmentThroughSearch(object, path, true, true, backward);
+		int count = 0;
+		for (Long key : searches.keySet()) {
+			ReferenceSearchResult result = searches.get(key);
+			count += result.countRefs();
+		}; System.out.println("expected " + expected + ", got "+ count);
+		assertEquals(count, expected);
 	}
 
 	private void stressTestIGReferenceSearch(DMUID aDUUID, String aPath) throws Exception {
@@ -475,6 +511,7 @@ public class SATest {
 		}
 
 	}
+
 
 	private void stressTestASTReferenceSearch(DMUID aDUUID) throws Exception {
 		// do a real stress test - global search on all names
