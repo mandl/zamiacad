@@ -10,6 +10,7 @@ architecture RTL of attrTest is
       for i in v'reverse_range loop
          count := count + 1;
       end loop;
+	  assert count = v'length report "wrong length" severity error ;
       return count;
     end f;
 
