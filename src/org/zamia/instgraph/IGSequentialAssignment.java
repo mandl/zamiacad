@@ -65,19 +65,13 @@ public class IGSequentialAssignment extends IGSequentialStatement {
 	 * In short, this can be rewritten as 
 	 * 		TARGET <= DRV, COND 
 	 * */	
-	public void propagateSearch(boolean left, int aDepth, HashSetArray<IGItemAccess> newItems, AccessedThroughItems todo) {
-		newItems.clear();
-		fTarget.computeAccessedItems(true, null, null, aDepth, newItems);
-		fValue.computeAccessedItems(false, null, null, aDepth, newItems);
-		
+	public void propagateSearch(boolean left, int aDepth, AccessedThroughItems todo) {
+		HashSetArray<IGItemAccess> newItems = new HashSetArray<IGItemAccess>();
 		AccessType filterType = left ? AccessType.Write : AccessType.Read;
-		HashSetArray<IGItemAccess> filteredItems = new HashSetArray<IGItemAccess>();
-		int n = newItems.size();
-		for (IGItemAccess a : newItems)
-			if (a.getAccessType() == filterType) 
-				filteredItems.add(a);
+		fTarget.computeAccessedItems(true, null, filterType, aDepth, newItems);
+		fValue.computeAccessedItems(false, null, filterType, aDepth, newItems);
 		
-		todo.scheduleAssignments(filteredItems, this.computeSourceLocation());
+		todo.scheduleAssignments(newItems, this.computeSourceLocation());
 		
 	}
 	
@@ -94,10 +88,7 @@ public class IGSequentialAssignment extends IGSequentialStatement {
 			HashSetArray<IGItemAccess> rightItems = new HashSetArray<IGItemAccess>();
 			
 			for (IGItemAccess a: newItems)
-				if (a.getAccessType() == AccessType.Read)
-					rightItems.add(a);
-				else 
-					leftItems.add(a);
+				(a.getAccessType() == AccessType.Read ? rightItems : leftItems).add(a);
 			
 			AccessedThroughItems todo = ((AccessedThroughItems) aAccessedItems);
 			
@@ -107,7 +98,7 @@ public class IGSequentialAssignment extends IGSequentialStatement {
 			if (todo.size() != sizeBefore) { 
 				
 				// then we depend on all right items - propagate search on them
-				propagateSearch(false, aDepth, newItems, todo);
+				propagateSearch(false, aDepth, todo);
 				
 				// treat IF conditions as right items
 				for (Pair<IGSequentialStatement, HashSetArray<IGItemAccess>> parent: todo.ifStack) {
@@ -130,7 +121,7 @@ public class IGSequentialAssignment extends IGSequentialStatement {
 					todo.add(condItem);
 			}
 			if (todo.size() != sizeBefore) {
-				propagateSearch(true, aDepth, newItems, todo); // propagate search to the left
+				propagateSearch(true, aDepth, todo); // propagate search to the left
 			}
 			
 		} else {

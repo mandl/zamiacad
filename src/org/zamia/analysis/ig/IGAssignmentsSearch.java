@@ -85,15 +85,11 @@ public class IGAssignmentsSearch extends IGReferencesSearch {
 	 * This results in a graph.    
 	 * */
 	public Map<Long, RootResult> assignmentThroughSearch(IGObject aItem, ToplevelPath path, 
-			boolean aSearchUpward, boolean aSearchDownward, boolean aWritersOnly, boolean aReadersOnly) {
+			boolean aSearchUpward, boolean aSearchDownward, boolean aBackward) {
 		
-		fWritersOnly = aWritersOnly;
-		fReadersOnly = aReadersOnly;
-		fSearchUpward = aSearchUpward;
-		fSearchDownward = aSearchDownward;
+		fWritersOnly = aBackward; fReadersOnly = !aBackward;
+		fSearchUpward = aSearchUpward; fSearchDownward = aSearchDownward;
 
-		if (!fReadersOnly && !fWritersOnly)
-			throw new IllegalArgumentException("Search through assignments in both directions is not supported. Check either Read Only or Write Only.");
 		newSignalSearch(aItem.computeSourceLocation(), aItem, path);
 		
 		while (!nextGeneration.isEmpty()) {
