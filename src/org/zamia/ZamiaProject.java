@@ -91,7 +91,7 @@ public class ZamiaProject {
 
 	private ZCJInterpreter fZCJ;
 	
-	private String jythonPath;
+	private String  jythonPath;
 
 	private static final String BUILDPATH_OBJ_NAME = "ZPRJ_BuildPath";
 
@@ -140,6 +140,9 @@ public class ZamiaProject {
 
 	public void initJythonInterpreter() {
 		try {
+			
+			if(jythonPath == null)
+				jythonPath = "/home/mandl/jython2.7.0";
 			fZCJ = new ZCJInterpreter(this,jythonPath);
 
 			// run init script
