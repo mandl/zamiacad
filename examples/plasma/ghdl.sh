@@ -26,4 +26,4 @@ ghdl -i --work=work --workdir=work ram.vhd
 
 ghdl -m --ieee=synopsys -fexplicit --workdir=work -Pwork tbench
 ghdl -e --ieee=synopsys -fexplicit --workdir=work -Pwork tbench
-ghdl -r tbench --vcd=tbench.vcd --stop-time=100000ns
+ghdl -r --ieee=synopsys -fexplicit --workdir=work tbench --vcd=tbench.vcd --stop-time=100000ns
