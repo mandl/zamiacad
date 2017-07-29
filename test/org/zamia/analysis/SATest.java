@@ -252,9 +252,9 @@ public class SATest {
 
 		sf = new SourceFile(new File("examples/gcounter/addg.vhdl"));
 
-		ids = runASTCompletion(sf, 22, 9);
+		ids = runASTCompletion(sf, 22, 9); // vai  GENERIC WIDTH => 4  
 		assertNotNull("Failed to find completion proposals", ids);
-		assertEquals("Wrong number of completion proposals", 10, ids.size());
+		assertEquals("Wrong number of completion proposals", 3, ids.size());
 	}
 
 	@Test
@@ -312,7 +312,7 @@ public class SATest {
 
 		SourceFile sf = new SourceFile(new File("examples/gcounter/addg.vhdl"));
 
-		ReferenceSearchResult result = runASTReferenceSearch(sf, 22, 35, true, true);
+		ReferenceSearchResult result = runASTReferenceSearch(sf, 22, 33, true, true);
 		assertNotNull(result);
 		result.dump(0, System.out);
 		assertEquals(9, result.countRefs());

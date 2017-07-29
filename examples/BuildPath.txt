@@ -10,7 +10,7 @@
 # variables can be assigned using '='
 
 # local variables
-LEON_SRC="examples/leon"
+LEON_SRC="examples/leonSOC"
 
 # external sources
 extern GRLIB 		"$LEON_SRC/lib/grlib"
